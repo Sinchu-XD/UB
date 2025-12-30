@@ -13,9 +13,15 @@ group_id = int(os.environ.get("GROUP_ID"))
 DELAY = int(os.environ.get("DELAY", 30))
 MESSAGE = os.environ.get("MESSAGE")
 
-client = TelegramClient(StringSession(session), api_id, api_hash)
+TAG_FILE = "tagged.txt"
 
-tagged_users = set()
+if os.path.exists(TAG_FILE):
+    with open(TAG_FILE, "r") as f:
+        tagged_users = set(map(int, f.read().splitlines()))
+else:
+    tagged_users = set()
+
+client = TelegramClient(StringSession(session), api_id, api_hash)
 
 async def main():
     await client.start()
@@ -44,7 +50,11 @@ async def main():
                 f"{tag} {MESSAGE}",
                 parse_mode="md"
             )
+
             tagged_users.add(user.id)
+            with open(TAG_FILE, "a") as f:
+                f.write(str(user.id) + "\n")
+
             await asyncio.sleep(DELAY)
         except:
             await asyncio.sleep(10)
