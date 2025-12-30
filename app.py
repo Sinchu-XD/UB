@@ -1,15 +1,17 @@
 import asyncio
 import os
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 from telethon.tl.types import PeerChannel
 
 api_id = int(os.environ.get("API_ID"))
 api_hash = os.environ.get("API_HASH")
+session = os.environ.get("SESSION")
 group_id = int(os.environ.get("GROUP_ID"))
 DELAY = int(os.environ.get("DELAY", 30))
 MESSAGE = os.environ.get("MESSAGE")
 
-client = TelegramClient("userbot", api_id, api_hash)
+client = TelegramClient(StringSession(session), api_id, api_hash)
 
 tagged_users = set()
 
