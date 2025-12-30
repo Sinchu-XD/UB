@@ -26,10 +26,8 @@ async def main():
         if user.id in tagged_users:
             continue
 
-        if user.username:
-            tag = f"@{user.username}"
-        else:
-            tag = f"[User](tg://user?id={user.id})"
+        name = user.first_name or "User"
+        tag = f"[{name}](tg://user?id={user.id})"
 
         try:
             await client.send_message(
