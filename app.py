@@ -3,6 +3,8 @@ import os
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.tl.types import PeerChannel
+from telethon.tl.functions.channels import GetParticipantRequest
+from telethon.tl.types import ChannelParticipantAdmin, ChannelParticipantCreator
 
 api_id = int(os.environ.get("API_ID"))
 api_hash = os.environ.get("API_HASH")
@@ -24,6 +26,13 @@ async def main():
         if user.bot or user.deleted:
             continue
         if user.id in tagged_users:
+            continue
+
+        try:
+            p = await client(GetParticipantRequest(group, user.id))
+            if isinstance(p.participant, (ChannelParticipantAdmin, ChannelParticipantCreator)):
+                continue
+        except:
             continue
 
         name = user.first_name or "User"
